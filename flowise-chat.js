@@ -1,85 +1,88 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
-  if (window.GoldieChatbotLoaded) return;
-  window.GoldieChatbotLoaded = true;
+  if (window.FlowiseChatLoaded) return;
+  window.FlowiseChatLoaded = true;
 
-  // remove old elements if any
-  document.getElementById("chat-window")?.remove();
-  document.getElementById("chat-trigger")?.remove();
+  // remove duplicates if any
+  document.getElementById("flowise-chatbot-container")?.remove();
+
+  // create container (Flowise needs a mount point)
+  const container = document.createElement("div");
+  container.id = "flowise-chatbot-container";
+  document.body.appendChild(container);
 
   try {
-    // load Flowise properly (NO innerHTML, NO module script injection)
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js";
-    script.type = "module";
+    // ✅ Proper ES module import
+    const { Chatbot } = await import(
+      "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js"
+    );
 
-    script.onload = async () => {
-      const { Chatbot } = await import("https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js");
+    Chatbot.init({
+      chatflowid: "4f392983-01fa-4b5e-bdfc-13eda6b93e52",
+      apiHost: "https://cloud.flowiseai.com",
 
-      Chatbot.init({
-        chatflowid: "4f392983-01fa-4b5e-bdfc-13eda6b93e52",
-        apiHost: "https://flowise-goldie.onrender.com",
+      theme: {
+        button: {
+          backgroundColor: "#c45c2e", // matches your portfolio accent
+          right: 24,
+          bottom: 24,
+          size: "medium",
+          iconColor: "#ffffff"
+        },
 
-        theme: {
-          button: {
+        tooltip: {
+          showTooltip: true,
+          tooltipMessage: "Chat with Goldie 👋",
+          tooltipBackgroundColor: "#1a1410",
+          tooltipTextColor: "#ffffff"
+        },
+
+        chatWindow: {
+          showTitle: true,
+          title: "Goldie Assistant",
+
+          welcomeMessage:
+            "Hi! I'm your assistant. Ask me about experience, skills, or availability.",
+
+          backgroundColor: "#f5f0e8",
+          height: 560,
+          width: 380,
+          fontSize: 14,
+
+          starterPrompts: [
+            "What is Goldie's experience?",
+            "What skills does he have?",
+            "Is he available for hire?"
+          ],
+
+          botMessage: {
+            backgroundColor: "#ede8df",
+            textColor: "#1a1410",
+            showAvatar: true
+          },
+
+          userMessage: {
             backgroundColor: "#c45c2e",
-            right: 24,
-            bottom: 24,
-            size: "medium",
-            iconColor: "#ffffff"
+            textColor: "#ffffff",
+            showAvatar: true
           },
 
-          tooltip: {
-            showTooltip: true,
-            tooltipMessage: "Chat with Goldie 👋",
-            tooltipBackgroundColor: "#1a1410",
-            tooltipTextColor: "#ffffff"
+          textInput: {
+            placeholder: "Ask me anything…",
+            backgroundColor: "#ffffff",
+            textColor: "#1a1410",
+            sendButtonColor: "#c45c2e"
           },
 
-          chatWindow: {
-            showTitle: true,
-            title: "Goldie's Assistant",
-            welcomeMessage:
-              "Hi! I'm Goldie's assistant. Ask me anything.",
-
-            backgroundColor: "#f5f0e8",
-            height: 650,
-            width: 380,
-
-            starterPrompts: [
-              "What is Goldie's experience?",
-              "What skills does he have?",
-              "Is he available for hire?"
-            ],
-
-            botMessage: {
-              backgroundColor: "#ede8df",
-              textColor: "#1a1410",
-              showAvatar: true
-            },
-
-            userMessage: {
-              backgroundColor: "#c45c2e",
-              textColor: "#ffffff",
-              showAvatar: true
-            },
-
-            textInput: {
-              placeholder: "Ask me anything…",
-              sendButtonColor: "#c45c2e"
-            }
+          footer: {
+            textColor: "#7a6e62",
+            text: "Powered by Flowise"
           }
         }
-      });
-    };
-
-    script.onerror = () => {
-      console.error("Failed to load Flowise script");
-    };
-
-    document.body.appendChild(script);
+      }
+    });
 
   } catch (err) {
-    console.error("Chatbot error:", err);
+    console.error("Flowise failed to load:", err);
   }
 });
