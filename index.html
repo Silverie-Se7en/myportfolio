@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goldie Mission — IT Support Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --ink: #1a1410;
+    --accent: #c45c2e;
+    --muted: #7a6e62;
+    --card: #ede8df;
+    --line: #d4cdc3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* ── HERO ── */
+  header {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    line-height: 1.1;
+    margin-bottom: 32px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .summary {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 420px;
+    margin-bottom: 48px;
+  }
+
+  .contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .contact-row a, .contact-row span {
+    font-size: 13px;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+  }
+
+  .name-photo-row {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 0;
+  }
+
+  .name-photo-row h1 {
+    margin-bottom: 0;
+  }
+
+  .profile-photo-beside {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    object-fit: cover;
+    object-position: center top;
+    box-shadow: 0 0 0 5px rgba(196,92,46,0.15);
+    flex-shrink: 0;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 100px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 60px;
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem;
+  }
+
+  .section-num {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+  }
+
+  /* ── EXPERIENCE ── */
+  .exp-grid {
+    display: grid;
+    gap: 2px;
+  }
+
+  .exp-card {
+    background: var(--card);
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 40px;
+    transition: background 0.2s;
+  }
+
+  .exp-card:hover { background: #e5dfd4; }
+
+  .exp-meta .period {
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .exp-meta .location {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .exp-body h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+  }
+
+  .exp-body .company {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .exp-body ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .exp-body ul li {
+    font-size: 14px;
+    padding: 6px 0;
+    border-top: 1px solid var(--line);
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .exp-body ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2px;
+  }
+
+  .skill-item {
+    background: var(--card);
+    padding: 32px 28px;
+  }
+
+  .skill-item .skill-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .skill-bar {
+    height: 2px;
+    background: var(--line);
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  .skill-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .skill-level {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ── EDUCATION ── */
+  .edu-block {
+    background: var(--ink);
+    color: #fff;
+    padding: 60px;
+    border-radius: 2px;
+  }
+
+  .edu-block .period {
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .edu-block h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+  }
+
+  .edu-block .institution {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 24px;
+  }
+
+  .edu-block p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+  }
+
+  /* ── HOBBIES ── */
+  .hobbies-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .hobby-tag {
+    padding: 10px 22px;
+    border: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--muted);
+    border-radius: 100px;
+    transition: all 0.2s;
+  }
+
+  .hobby-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 40px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+  }
+
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--line);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 768px) {
+    header { grid-template-columns: 1fr; }
+    .hero-left { padding: 60px 28px; }
+    section { padding: 60px 28px; }
+    .exp-card { grid-template-columns: 1fr; gap: 12px; }
+    .edu-block { padding: 36px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header>
+  <div class="hero-left">
+    <p class="label">Portfolio — IT Support &amp; Customer Service</p>
+    <div class="name-photo-row">
+    <h1>Goldie<br><em>Mission</em></h1>
+    <img class="profile-photo-beside" src="photo.jpg" alt="Goldie Mission" />
+  </div>
+    <p class="summary">Office aide and live chat specialist with a passion for IT, bridging software, hardware, and people through efficient, user-centered solutions.</p>
+    <div class="contact-row">
+      <span>+63 956 034 8112</span>
+      <a href="mailto:goldie.mission07@gmail.com">goldie.mission07@gmail.com</a>
+      <span>Cebu City, PH</span>
+    </div>
+  </div>
+</header>
+
+<!-- EXPERIENCE -->
+<section>
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>Experience</h2>
+  </div>
+  <div class="exp-grid">
+
+    <div class="exp-card fade-up">
+      <div class="exp-meta">
+        <p class="period">Jul 2024 – May 2025</p>
+        <p class="location">New York City</p>
+      </div>
+      <div class="exp-body">
+        <h3>Chatter</h3>
+        <p class="company">Limitless Media Corp.</p>
+        <ul>
+          <li>Managed high-volume live chat, handling 80+ customer interactions weekly with a 95% satisfaction rate.</li>
+          <li>Built response templates and knowledge snippets, cutting average response time by 30% and boosting first-contact resolutions.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card fade-up">
+      <div class="exp-meta">
+        <p class="period">Dec 2023 – Jul 2024</p>
+        <p class="location">Los Angeles</p>
+      </div>
+      <div class="exp-body">
+        <h3>Chatter</h3>
+        <p class="company">Top Chatters</p>
+        <ul>
+          <li>Managed high-volume live chat, handling 80+ customer interactions weekly with a 95% satisfaction rate.</li>
+          <li>Created concise response templates and knowledge snippets, reducing response time by 30%.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card fade-up">
+      <div class="exp-meta">
+        <p class="period">May 2015 – Nov 2019</p>
+        <p class="location">Agusan del Norte</p>
+      </div>
+      <div class="exp-body">
+        <h3>Office Aide</h3>
+        <p class="company">Municipality of Tubay</p>
+        <ul>
+          <li>Managed scheduling, maintained filing systems, and coordinated communication to support seamless daily operations.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section>
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>Skills</h2>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-item fade-up">
+      <p class="skill-name">Basic Computer Literacy</p>
+      <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
+      <p class="skill-level">Advanced</p>
+    </div>
+    <div class="skill-item fade-up">
+      <p class="skill-name">Organizational Skills</p>
+      <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
+      <p class="skill-level">Advanced</p>
+    </div>
+    <div class="skill-item fade-up">
+      <p class="skill-name">Data Entry</p>
+      <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
+      <p class="skill-level">Intermediate</p>
+    </div>
+    <div class="skill-item fade-up">
+      <p class="skill-name">Scheduling</p>
+      <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
+      <p class="skill-level">Intermediate</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EDUCATION -->
+<section>
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Education</h2>
+  </div>
+  <div class="edu-block fade-up">
+    <p class="period">Aug 2021 – Present</p>
+    <h3>BS Information Technology</h3>
+    <p class="institution">University of Cebu — Cebu City</p>
+    <p>Passionate about bridging software and hardware — from developing web applications and database architectures to experimenting with microcontrollers and sensor integration. Continuously driven to apply hands-on project experience and analytical skills toward efficient, innovative systems.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOBBIES -->
+<section>
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>Interests</h2>
+  </div>
+  <div class="hobbies-row fade-up">
+    <span class="hobby-tag">🎮 Video Games</span>
+    <span class="hobby-tag">📖 Manga &amp; Manhwa</span>
+    <span class="hobby-tag">📺 Anime &amp; Series</span>
+    <span class="hobby-tag">🎞 Documentaries</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Goldie Mission &nbsp;·&nbsp; <a href="mailto:goldie.mission07@gmail.com">goldie.mission07@gmail.com</a> &nbsp;·&nbsp; Cebu City, Philippines</p>
+</footer>
+
+<script>
+  // Scroll-triggered fade
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Animate skill bars
+  const barObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.skill-fill').forEach(fill => {
+          fill.style.width = fill.dataset.width + '%';
+        });
+        barObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.skills-grid').forEach(el => barObserver.observe(el));
+</script>
+</body>
+</html>
