@@ -1,206 +1,165 @@
-const FLOWISE_API =
-'https://flowise-goldie.onrender.com/api/v1/prediction/4f392983-01fa-4b5e-bdfc-13eda6b93e52';
+// flowise-chat.js
 
-const chatWindow = document.getElementById('chat-window');
-const chatMessages = document.getElementById('chat-messages');
-const chatInput = document.getElementById('chat-input');
-const sendBtn = document.getElementById('send-btn');
-const chatTrigger = document.getElementById('chat-trigger');
-const iconChat = document.getElementById('icon-chat');
-const iconClose = document.getElementById('icon-close');
-const starterWrap = document.getElementById('starter-prompts');
+document.addEventListener('DOMContentLoaded', function () {
 
-let chatOpen = false;
-let isLoading = false;
+  class FlowiseChatbot {
 
-/* Welcome Message */
-function addWelcome() {
-  addMessage(
-    'bot',
-    "Hi! I'm Goldie's assistant. Ask me about experience, skills, or availability."
-  );
-}
+    constructor(config) {
+      this.chatflowid = config.chatflowid;
+      this.apiHost = config.apiHost;
+      this.theme = config.theme || {};
+      this.chatbotConfig = config.chatbotConfig || {};
 
-/* Open / Close Chat */
-chatTrigger.addEventListener('click', () => {
-  chatOpen = !chatOpen;
-
-  chatWindow.classList.toggle('open', chatOpen);
-
-  iconChat.style.display = chatOpen ? 'none' : '';
-  iconClose.style.display = chatOpen ? '' : 'none';
-
-  if (chatOpen && chatMessages.children.length === 0) {
-    addWelcome();
-  }
-});
-
-/* Starter Prompts */
-document.querySelectorAll('.starter-prompt-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const prompt = btn.dataset.prompt;
-
-    starterWrap.style.display = 'none';
-
-    sendMessage(prompt);
-  });
-});
-
-/* Auto Resize Textarea */
-chatInput.addEventListener('input', () => {
-  chatInput.style.height = 'auto';
-
-  chatInput.style.height =
-    Math.min(chatInput.scrollHeight, 90) + 'px';
-});
-
-/* Send on Enter */
-chatInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-
-    triggerSend();
-  }
-});
-
-sendBtn.addEventListener('click', triggerSend);
-
-function triggerSend() {
-  const text = chatInput.value.trim();
-
-  if (!text || isLoading) return;
-
-  starterWrap.style.display = 'none';
-
-  sendMessage(text);
-
-  chatInput.value = '';
-  chatInput.style.height = 'auto';
-}
-
-/* Add Chat Bubble */
-function addMessage(role, text) {
-  const wrap = document.createElement('div');
-
-  wrap.className = `msg ${role}`;
-
-  if (role === 'bot') {
-    const avatar = document.createElement('div');
-
-    avatar.className = 'msg-avatar';
-    avatar.textContent = 'G';
-
-    wrap.appendChild(avatar);
-  }
-
-  const bubble = document.createElement('div');
-
-  bubble.className = 'msg-bubble';
-  bubble.textContent = text;
-
-  wrap.appendChild(bubble);
-
-  chatMessages.appendChild(wrap);
-
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-/* Typing Indicator */
-function showTyping() {
-  const wrap = document.createElement('div');
-
-  wrap.className = 'msg bot';
-  wrap.id = 'typing-wrap';
-
-  const avatar = document.createElement('div');
-
-  avatar.className = 'msg-avatar';
-  avatar.textContent = 'G';
-
-  const indicator = document.createElement('div');
-
-  indicator.className = 'typing-indicator';
-
-  for (let i = 0; i < 3; i++) {
-    const dot = document.createElement('div');
-
-    dot.className = 'typing-dot';
-
-    indicator.appendChild(dot);
-  }
-
-  wrap.appendChild(avatar);
-  wrap.appendChild(indicator);
-
-  chatMessages.appendChild(wrap);
-
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function hideTyping() {
-  const typing = document.getElementById('typing-wrap');
-
-  if (typing) {
-    typing.remove();
-  }
-}
-
-/* Send Message to Flowise */
-async function sendMessage(text) {
-  if (isLoading) return;
-
-  isLoading = true;
-
-  sendBtn.disabled = true;
-
-  addMessage('user', text);
-
-  showTyping();
-
-  try {
-    const response = await fetch(FLOWISE_API, {
-      method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json'
-      },
-
-      body: JSON.stringify({
-        question: text
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      this.init();
     }
 
-    const data = await response.json();
+    init() {
+      this.createChatbotContainer();
+      this.loadFlowiseScript();
+    }
 
-    hideTyping();
+    createChatbotContainer() {
 
-    const reply =
-      data.text ||
-      data.answer ||
-      data.message ||
-      'No response received.';
+      if (document.getElementById('flowise-chatbot-container')) {
+        return;
+      }
 
-    addMessage('bot', reply);
+      const container = document.createElement('div');
 
-  } catch (error) {
-    hideTyping();
+      container.id = 'flowise-chatbot-container';
 
-    addMessage(
-      'bot',
-      'Sorry, I could not connect to the chatbot server.'
-    );
+      document.body.appendChild(container);
+    }
 
-    console.error('Flowise Error:', error);
+    loadFlowiseScript() {
 
-  } finally {
-    isLoading = false;
+      if (window.FlowiseChatbotLoaded) return;
 
-    sendBtn.disabled = false;
+      const script = document.createElement('script');
 
-    chatInput.focus();
+      script.type = 'module';
+
+      script.textContent = `
+        import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js"
+
+        Chatbot.init({
+
+          chatflowid: "${this.chatflowid}",
+
+          apiHost: "${this.apiHost}",
+
+          theme: ${JSON.stringify(this.theme)},
+
+          chatbotConfig: ${JSON.stringify(this.chatbotConfig)}
+
+        })
+      `;
+
+      document.head.appendChild(script);
+
+      window.FlowiseChatbotLoaded = true;
+    }
   }
-}
+
+  /* ─────────────────────────────
+     GOLDIE CHATBOT DESIGN
+  ───────────────────────────── */
+
+  const chatbot = new FlowiseChatbot({
+
+    chatflowid: "4f392983-01fa-4b5e-bdfc-13eda6b93e52",
+
+    apiHost: "https://flowise-goldie.onrender.com",
+
+    theme: {
+
+      button: {
+        backgroundColor: "#c45c2e",
+        right: 24,
+        bottom: 24,
+        size: "medium",
+        iconColor: "#ffffff",
+
+        customIconSrc:
+          "https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+      },
+
+      tooltip: {
+        showTooltip: true,
+        tooltipMessage: "Chat with Goldie 👋",
+        tooltipBackgroundColor: "#1a1410",
+        tooltipTextColor: "#ffffff",
+        tooltipFontSize: 13
+      },
+
+      chatWindow: {
+
+        showTitle: true,
+
+        title: "Goldie's Assistant",
+
+        titleAvatarSrc:
+          "https://cdn-icons-png.flaticon.com/512/4712/4712035.png",
+
+        welcomeMessage:
+          "Hi! I'm Goldie's assistant. Ask me about experience, skills, or availability.",
+
+        errorMessage:
+          "Sorry, I couldn't connect right now.",
+
+        backgroundColor: "#f5f0e8",
+
+        height: 650,
+
+        width: 380,
+
+        fontSize: 14,
+
+        starterPrompts: [
+          "What is Goldie's experience?",
+          "What skills does she have?",
+          "Is she available for hire?"
+        ],
+
+        starterPromptFontSize: 13,
+
+        clearChatOnReload: false,
+
+        botMessage: {
+          backgroundColor: "#ede8df",
+          textColor: "#1a1410",
+          showAvatar: true,
+
+          avatarSrc:
+            "https://cdn-icons-png.flaticon.com/512/4712/4712035.png"
+        },
+
+        userMessage: {
+          backgroundColor: "#c45c2e",
+          textColor: "#ffffff",
+          showAvatar: true
+        },
+
+        textInput: {
+          placeholder: "Ask me anything…",
+          backgroundColor: "#ffffff",
+          textColor: "#1a1410",
+          sendButtonColor: "#c45c2e",
+          maxChars: 500
+        },
+
+        footer: {
+          textColor: "#7a6e62",
+          text: "Powered by Flowise"
+        }
+      }
+    },
+
+    chatbotConfig: {
+
+      /* Optional additional configs */
+
+    }
+  });
+
+});
